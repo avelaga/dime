@@ -1,0 +1,27 @@
+# ---- Personal financial data: never commit --------------------------------
+# Statements (any location), the local database + uploaded copies, and the
+# masked layout dumps produced by tools/redact_skeleton.py.
+*.pdf
+*.PDF
+statements/
+data/
+redacted/
+*.db
+*.db.*
+*.sqlite
+*.sqlite3
+*.csv
+*.ofx
+*.qfx
+
+# ---- Environments & build output -------------------------------------------
+.venv/
+node_modules/
+frontend/dist/
+__pycache__/
+*.pyc
+.env
+.env.*
+.DS_Store
+*.tsbuildinfo
+demo-data/
