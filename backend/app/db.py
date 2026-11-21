@@ -63,6 +63,10 @@ CREATE TABLE IF NOT EXISTS merchants(
   category TEXT,
   source TEXT NOT NULL DEFAULT 'pending'); -- pending | llm | keyword | user
 CREATE TABLE IF NOT EXISTS categories(name TEXT PRIMARY KEY, parent TEXT NOT NULL, ord INTEGER);
+CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT);   -- small user preferences (FIRE assumptions…)
+CREATE TABLE IF NOT EXISTS fire_balances(     -- invested-assets snapshots for FIRE tracking (401k, IRA, brokerage…)
+  month TEXT PRIMARY KEY,                     -- YYYY-MM
+  amount INTEGER NOT NULL);                   -- cents
 """
 
 # Columns added after the first release: (table, column, definition).

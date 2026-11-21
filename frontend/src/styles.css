@@ -79,7 +79,7 @@ nav.tabs button.on { background: var(--surface); color: var(--text); box-shadow:
 .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .seg button { border: 0; background: var(--surface); padding: 5px 10px; cursor: pointer; color: var(--text-2); }
 .seg button.on { background: var(--surface-2); color: var(--text); font-weight: 600; }
-input[type=text], input[type=search], input[type=date], input[type=month], select {
+input[type=text], input[type=search], input[type=date], input[type=month], input[type=number], select {
   border: 1px solid var(--border); background: var(--surface); padding: 6px 8px; border-radius: 8px; }
 label.check { display: inline-flex; gap: 6px; align-items: center; color: var(--text-2); cursor: pointer; }
 
@@ -153,3 +153,9 @@ th[aria-sort="ascending"], th[aria-sort="descending"] { color: var(--text); }
 .tag:hover { border-color: var(--accent); }
 .callouts { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .callouts li { padding: 8px 12px; background: var(--surface-2); border-radius: 8px; }
+
+/* FIRE tab */
+.fire-track { height: 8px; border-radius: 4px; background: var(--surface-2); margin: 8px 0 2px; overflow: hidden; }
+.fire-track > div { height: 100%; border-radius: 4px; background: var(--accent); min-width: 2px; }
+.fire-form { display: grid; gap: 12px; }
+.fire-form > label { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; color: var(--text-2); }

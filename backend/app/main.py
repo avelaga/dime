@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from . import analytics, db, llm, recurring
+from . import analytics, db, fire, llm, recurring
 from .categories import PARENT_OF, TAXONOMY, merchant_key
 from .parsers import ISSUERS, ParseError, parse_pdf
 
@@ -461,6 +461,58 @@ def get_insights():
     with db.tx() as c:
         recurring.sync_if_stale(c)
         return analytics.insights(c)
+
+
+# ---------------------------------------------------------------- FIRE tracking
+class FireSettingsIn(BaseModel):
+    return_pct: float = 5.0
+    swr_pct: float = 4.0
+    basis: str = "actual"  # actual (one-offs included) | typical (one-offs excluded)
+    birth_year: int | None = None
+    retire_spend: int | None = None  # cents per year; None = derive from spending
+    current_spend: int | None = None  # cents per year; None = average of complete months
+
+
+class FireBalanceIn(BaseModel):
+    month: str
+    amount: int  # cents
+
+
+@app.get("/api/fire")
+def get_fire():
+    with db.tx() as c:
+        recurring.sync_if_stale(c)
+        return fire.view(c)
+
+
+@app.put("/api/fire/settings")
+def put_fire_settings(r: FireSettingsIn):
+    if not (-5 <= r.return_pct <= 15) or not (1 <= r.swr_pct <= 10) or r.basis not in ("actual", "typical"):
+        raise HTTPException(400, "return must be -5..15%, withdrawal rate 1..10%, basis actual|typical")
+    if r.retire_spend is not None and r.retire_spend <= 0:
+        r.retire_spend = None
+    if r.current_spend is not None and r.current_spend <= 0:
+        r.current_spend = None
+    with db.tx() as c:
+        fire.save_settings(c, r.model_dump())
+    return {"ok": True}
+
+
+@app.post("/api/fire/balances")
+def put_fire_balance(r: FireBalanceIn):
+    if len(r.month) < 7 or r.amount < 0:
+        raise HTTPException(400, "month (YYYY-MM) and a non-negative amount are required")
+    with db.tx() as c:
+        c.execute("INSERT INTO fire_balances(month, amount) VALUES (?, ?) ON CONFLICT(month) DO UPDATE SET amount = excluded.amount",
+                  (r.month[:7], r.amount))
+    return {"ok": True}
+
+
+@app.delete("/api/fire/balances/{month}")
+def delete_fire_balance(month: str):
+    with db.tx() as c:
+        c.execute("DELETE FROM fire_balances WHERE month = ?", (month,))
+    return {"ok": True}
 
 
 # ---------------------------------------------------------------- built frontend (production mode)

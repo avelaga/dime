@@ -6,9 +6,10 @@ import Trends from './views/Trends'
 import Transactions from './views/Transactions'
 import Insights from './views/Insights'
 import Accounts from './views/Accounts'
+import Fire from './views/Fire'
 
-type Tab = 'month' | 'year' | 'trends' | 'transactions' | 'insights' | 'accounts'
-const TABS: [Tab, string][] = [['month', 'Monthly'], ['year', 'Yearly'], ['trends', 'Trends'], ['transactions', 'Transactions'], ['insights', 'Insights'], ['accounts', 'Accounts & Upload']]
+type Tab = 'month' | 'year' | 'trends' | 'transactions' | 'insights' | 'fire' | 'accounts'
+const TABS: [Tab, string][] = [['month', 'Monthly'], ['year', 'Yearly'], ['trends', 'Trends'], ['transactions', 'Transactions'], ['insights', 'Insights'], ['fire', 'FIRE'], ['accounts', 'Accounts & Upload']]
 
 export type Ctx = {
   version: number
@@ -100,6 +101,7 @@ export default function App() {
       {tab === 'trends' && <Trends ctx={ctx} />}
       {tab === 'transactions' && <Transactions ctx={ctx} initial={txnFilter} />}
       {tab === 'insights' && <Insights ctx={ctx} />}
+      {tab === 'fire' && <Fire ctx={ctx} />}
       {tab === 'accounts' && <Accounts ctx={ctx} />}
     </div>
   )
